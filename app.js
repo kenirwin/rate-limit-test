@@ -1,19 +1,22 @@
 var limit = require('simple-rate-limiter');
-const C = require('./classes/ConvertEmail');
-const c = new C();
+const Convert = require('./classes/ConvertEmail');
+const convert = new Convert();
 
 // wrap the .then() up as part of the limited function
 const getId = limit(function (email) {
-  c.getId(email).then((data) => {
-    let result = c.resolveProperty('data.uid', data);
-    console.log(result);
+  convert.getId(email).then((data) => {
+    let result = convert.resolveProperty('data.uid', data);
+    console.log('Printed by the callback (not what we want): ', result);
   });
 })
-  .to(2)
-  .per(5000);
+  .to(3)
+  .per(3000);
 
 let arr = ['irwinkr', 'jerry.yarnetsky', 'aaron.shrimplin', 'qum@miamioh.edu'];
 
 arr.forEach((email) => {
-  getId(email);
+  let result = getId(email);
+  if (typeof result == 'string') {
+    console.log('SUCCESS: ', result);
+  }
 });
